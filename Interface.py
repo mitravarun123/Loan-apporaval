@@ -1,5 +1,9 @@
 import tkinter 
-import numpy as np 
+import numpy as np
+from sklearn.preprocessing import LabelEncoder,StandardScaler 
+from Machine import Classifier  
+clas=Classifier()
+svm=clas.svm_grid()
 window=tkinter.Tk()
 window.geometry("800x800")
 label_head=tkinter.Label(text="Loan Prediction System",font=("arial",30),borderwidth=0)
@@ -100,8 +104,22 @@ class Interface:
         self.var12=my_var12.get()
         self.var13=my_var13.get()
         self.var14=my_var14.get()
-        self.array=np.array([self.var1,self.var2])
-        print(self.array)      
+        self.array=np.array([self.var1,self.var2,self.var3,self.var4,self.var5,self.my_var6,
+            self.var7,self.var8,self.var9,self.var10,self.var11,self.var11,self.var12,self.var13,
+            self.var14])
+        lab=LabelEncoder()
+        stand=StandardScaler()
+        self.array1=lab.fit_transform(self.array)
+        self.array2=stand.fit_transform(self.array1)
+        y_pred=svm.predict(self.array2)
+        if y_pred == 1:
+            self.label_yes = tkinter.Label(
+                text="Yes", font=("arial", 15), borderwidth=0)
+            self.label1.place(x=800, y=600)
+        else:
+            self.label_no = tkinter.Label(
+                text="No", font=("arial", 15), borderwidth=0)
+            self.label2.place(x=800, y=600)
     def reset(self):
         entry1.delete(0,tkinter.END)
         entry2.delete(0,tkinter.END)
@@ -117,7 +135,11 @@ class Interface:
         entry12.delete(0,tkinter.END)
         entry13.delete(0,tkinter.END)
         entry14.delete(0,tkinter.END)
-        entry15.delete(0,tkinter.END)
+        entry15.delete(0,tkinter.END) 
+    def clear(self):
+        self.label_yes.after(1000,self.label_yes.destroy())
+        self.label_no.after(100,self,label_no.destroy())
+        self.label_thank.after(1000,self.label_thank.destroy())     
 inter=Interface() 
 button=tkinter.Button(text="Submit",command=inter.predict)
 button.place(x=300,y=600)
